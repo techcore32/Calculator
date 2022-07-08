@@ -26,19 +26,23 @@
         <div class="secondaryContainer">buenas</div>
         <div class="buttonsContainer">
 
-            <button data-type="clear" class="clear-global">C</button>
-            <button class="percentage"><img class="imgSize1" 
+            <button data-type="clear" data-erase="clear-global">C</button>
+            <button data-type="operator" data-function="percentage"><img class="imgSize1" 
                     src="Images/percentage.png" alt="percentage">%</button>     
-            <button class="changeSign"><img class="imgSize2" 
+            <button data-type="changer" class="changeSign"><img class="imgSize2" 
                     src="Images/plusMinus.png" alt="plus-minus">+/-</button>
-            <button class="backSpace"><img class="imgSize3" 
+            <button data-type="clear" data-erase="backSpace"><img class="imgSize3" 
                     src="Images/backspace.png" alt="backspace">␈</button>
             
-            <button class="reciprocal">¹∕&#x1D465;</button>
-            <button class="square">&#x1D465;²</button>
-            <button class="root-square">√&#x1D465;</button>
-            <button data-type="operator" data-function="divide"><img class="imgSize4" 
-                src="Images/divide.png" alt="divide">÷</button>   
+            <button data-type="operatorInstant" data-function="reciprocal">
+                    ¹∕&#x1D465;</button>
+            <button data-type="operatorInstant" data-function="square">
+                    &#x1D465;²</button>
+            <button data-type="operatorInstant" data-function="root-square">
+                    √&#x1D465;</button>
+            <button data-type="operator" data-function="divide">
+                <img class="imgSize4" src="Images/divide.png" 
+                     alt="divide">÷</button>   
 
             <button data-type="numbers">7</button>
             <button data-type="numbers">8</button>
@@ -55,12 +59,13 @@
             <button data-type="numbers">3</button>
             <button data-type="operator" data-function="plus">+</button>
 
-            <button class="clear-entry">CE</button>
+            <button data-type="clear" data-erase="clear-entry">CE</button>
             <button data-type="numbers">0</button>
-            <button class="decimal"><img class="imgSize5" 
+            <button data-type="numbers" class="decimal"><img class="imgSize5" 
                     src="Images/dot.png" alt="decimal">.</button>
             <button data-type="equal" class="equal"><img class="imgSize6" 
                     src="Images/equal.png" alt="equal">=</button>
+
         </div>
     </div>
 </body>

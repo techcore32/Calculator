@@ -126,18 +126,21 @@ button {
     
 }
 
-.percentage{
+[data-function = "percentage"]{
     font-size: 0px;
 }
 .changeSign{
     font-size: 0px;
 }
-.backSpace{
+
+[data-erase = "backSpace"]{
     font-size: 0px;
 }
+
 [data-function = "divide"]{
     font-size: 0px;
 }
+
 .decimal {
     font-size: 0px;
 }
