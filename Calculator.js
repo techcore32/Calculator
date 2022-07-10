@@ -12,17 +12,30 @@ buttons.addEventListener("click", e => {
     const displayValue = display.textContent;
     const {type} = key.dataset;
     const {previousKeyType} = calculator.dataset;
-    
+    const {previousKey} = calculator.dataset;
+    const {previousOperator} = calculator.dataset;
+    console.log(previousOperator);
+
     //is key a number?
     if(type === "numbers"){
 
         if(displayValue === "0"){
             display.textContent = keyValue;
             ghostDisplay.textContent = keyValue;
+            
         } 
         else if(previousKeyType === "operator"){
             display.textContent = keyValue;
             ghostDisplay.textContent = keyValue;
+
+            if(type === "numbers"  ) 
+            {
+               let state = buttons.querySelectorAll("[data-type='operator']");
+               state.forEach(el => {el.dataset.state = "unselected"});
+               calculator.dataset.nextKeyType = "operator";
+               
+               
+            }
         }
         else if(previousKeyType === "equal"){
             display.textContent = keyValue;
@@ -30,22 +43,46 @@ buttons.addEventListener("click", e => {
         else{
             display.textContent = displayValue + keyValue;
             ghostDisplay.textContent = displayValue + keyValue;
+
         }
     }
+    
 
     //is key an operator?
-    if(type === "operator"){
-        let operatorKeys = key.querySelectorAll("[data-type='operator']");
-        operatorKeys.forEach(el => {el.dataset.state = ""});
-        key.dataset.state = "selected";
+    if (key.dataset.state === ""){
+        if(type === "operator"){
+            let operatorKeys = buttons.querySelectorAll("[data-type='operator']");
+            operatorKeys.forEach(el => {el.dataset.state = ""});
+       
+            key.dataset.state = "selected";
 
-        calculator.dataset.firstDigit = displayValue;
-        calculator.dataset.operator = key.dataset.function;
+            calculator.dataset.operator = key.dataset.function;
+            calculator.dataset.firstDigit = displayValue;
+
+         }
     }
+
+    if(key.dataset.state === "unselected"){
+    
+        if(type === "operator"){ 
+
+            calculator.dataset.operator = previousOperator;
+            console.log(previousOperator);
+            
+            let firstDigit = calculator.dataset.firstDigit;
+            let secondDigit = displayValue;
+            let operator = calculator.dataset.operator;
+                
+            display.textContent = calculate(firstDigit,operator,secondDigit);
+                
+            calculator.dataset.firstDigit = calculate(firstDigit,operator,secondDigit);
+            calculator.dataset.operator = key.dataset.function;    
+
+            }
+        }
+
     if(type === "operatorInstant"){
-        let operatorKeys = key.querySelectorAll("[data-type='operatorInstant']");
-        operatorKeys.forEach(el => {el.dataset.state = ""});
-        key.dataset.state = "selected";
+
 
         calculator.dataset.firstDigit = displayValue;
         calculator.dataset.operator = key.dataset.function;
@@ -55,12 +92,19 @@ buttons.addEventListener("click", e => {
 
         display.textContent = calculate(firstDigit,operator);
     }
+
     if(type === "equal"){
+        let operatorKeys = buttons.querySelectorAll("[data-type='operator']");
+        operatorKeys.forEach(el => {el.dataset.state = ""});
+
         let firstDigit = calculator.dataset.firstDigit;
         let secondDigit = displayValue;
         let operator = calculator.dataset.operator;
 
         display.textContent = calculate(firstDigit,operator,secondDigit);
+
+        console.log(firstDigit);
+        console.log(secondDigit);
     }
 
     if(type === "clear"){
@@ -86,7 +130,9 @@ buttons.addEventListener("click", e => {
             display.textContent = -display.textContent;
     }
     calculator.dataset.previousKeyType = type;
-    
+    calculator.dataset.previousKey = keyValue;
+    calculator.dataset.previousOperator = previousKey;
+
 })
 
 function calculate(firstDigit,operator,secondDigit){
@@ -94,6 +140,12 @@ function calculate(firstDigit,operator,secondDigit){
    secondDigit = parseFloat(secondDigit);
    let result = "";
     
+    if (operator === "+") result = firstDigit + secondDigit;
+    if(operator === "-") result = firstDigit - secondDigit;
+    if(operator === "×")result = firstDigit * secondDigit;  
+    if(operator === "÷") result = firstDigit / secondDigit;
+    if(operator === "%") result = (secondDigit/100) * firstDigit;
+
     if(operator === "plus") result = firstDigit + secondDigit;
     if(operator === "minus") result = firstDigit - secondDigit;
     if(operator === "multiply")result = firstDigit * secondDigit;  
