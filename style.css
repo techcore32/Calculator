@@ -129,7 +129,7 @@ button {
 [data-function = "percentage"]{
     font-size: 0px;
 }
-.changeSign{
+[data-function = "changeSign"]{
     font-size: 0px;
 }
 
