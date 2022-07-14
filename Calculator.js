@@ -23,13 +23,21 @@ buttons.addEventListener("click", e => {
         if(displayValue === "0"){
             display.textContent = keyValue;
             ghostDisplay.textContent = keyValue;
-            return;
+            
+            if(previousKeyType === "operator"){
+ 
+                if(type === "numbers") 
+                {
+                   let state = buttons.querySelectorAll("[data-type='operator']");
+                   state.forEach(el => {el.dataset.state = "unselected"});
+                }
+            }
         } 
         else if(previousKeyType === "operator"){
             display.textContent = keyValue;
             ghostDisplay.textContent = keyValue;
 
-            if(type === "numbers"  ) 
+            if(type === "numbers") 
             {
                let state = buttons.querySelectorAll("[data-type='operator']");
                state.forEach(el => {el.dataset.state = "unselected"});
@@ -41,17 +49,10 @@ buttons.addEventListener("click", e => {
         else if(previousKeyType === "equal"){
             display.textContent = keyValue;
         }
-        else if(previousKeyType === "clear"){
-            display.textContent = displayValue + keyValue;
-            return;
-        }
     
         else{
             display.textContent = displayValue + keyValue;
             ghostDisplay.textContent = displayValue + keyValue;
-            if(previousKeyType === "numbers"){
-                return;
-            }
         }
     }
     
@@ -66,41 +67,54 @@ buttons.addEventListener("click", e => {
 
             calculator.dataset.operator = key.dataset.function;
             calculator.dataset.firstDigit = displayValue;
-            
          }
     }
 
     if(key.dataset.state === "unselected"){
     
         if(type === "operator"){ 
+            let operatorKeys = buttons.querySelectorAll("[data-type='operator']");
+            operatorKeys.forEach(el => {el.dataset.state = ""});
 
-                calculator.dataset.operator = previousOperator;
-                console.log(previousOperator);
+            key.dataset.state = "selected"
 
-            if(previousKeyType === "operator"){
-                return;
+            calculator.dataset.operator = previousOperator;
+               
+            let firstDigit = calculator.dataset.firstDigit;;
+            let secondDigit = displayValue;
+            let operator = calculator.dataset.operator;;
+            
+
+            if(operator === "divide" || operator === "÷"){
+                if(firstDigit === "0" && secondDigit === "0"){
+                    display.textContent = "Undefined Result"
+                }
+                else if(secondDigit === "0"){
+                    display.textContent = "Cannot divide by zero"
+                }
+                else{
+                    display.textContent = calculate(firstDigit,operator,secondDigit);
+                    ghostDisplay.textContent = calculate(firstDigit,operator,secondDigit);
+                }
+            }
+            else{
+                display.textContent = calculate(firstDigit,operator,secondDigit);
+                ghostDisplay.textContent = calculate(firstDigit,operator,secondDigit);
             }
 
-            let firstDigit = calculator.dataset.firstDigit;
-            let secondDigit = displayValue;
-            let operator = calculator.dataset.operator;
-
-            display.textContent = calculate(firstDigit,operator,secondDigit);
-            ghostDisplay.textContent = calculate(firstDigit,operator,secondDigit);
-            
             if(type === "clear"){
                 calculator.dataset.firstDigit = ghostDisplay.textContent;
             }
             else{
             calculator.dataset.firstDigit = displayValue;
-            calculator.dataset.operator = key.dataset.function;
+            // calculator.dataset.operator = key.dataset.function;
             }
 
             calculator.dataset.firstDigit = calculate(firstDigit,operator,secondDigit);
             
         }
     
-        }
+    }
 
 
     if(type === "operatorInstant"){
@@ -112,8 +126,19 @@ buttons.addEventListener("click", e => {
 
         let firstDigit = calculator.dataset.firstDigit;
         let operator = calculator.dataset.operator;
+        
+        if(operator === "reciprocal"){
+            if(firstDigit === "0"){
+                display.textContent = "Cannot divide by zero"
+            }
+            else{
+                display.textContent = calculate(firstDigit,operator);
+            }
+        }
+        else{
+            display.textContent = calculate(firstDigit,operator);
+        }
 
-        display.textContent = calculate(firstDigit,operator);
     }
 
     if(type === "equal"){
@@ -124,11 +149,20 @@ buttons.addEventListener("click", e => {
         let firstDigit = calculator.dataset.firstDigit;
         let secondDigit = displayValue;
         let operator = calculator.dataset.operator;
-
-        display.textContent = calculate(firstDigit,operator,secondDigit);
-
-        console.log(firstDigit);
-        console.log(secondDigit);
+        if(operator === "divide"){
+            if(firstDigit === "0" && secondDigit === "0"){
+                display.textContent = "Undefined Result"
+            }
+            else if(secondDigit === "0"){
+                display.textContent = "Cannot divide by zero"
+            }
+            else{
+                display.textContent = calculate(firstDigit,operator,secondDigit);
+            }
+        }
+        else{
+            display.textContent = calculate(firstDigit,operator,secondDigit);
+        }
     }
 
     if(type === "clear"){
@@ -149,7 +183,6 @@ buttons.addEventListener("click", e => {
                 display.textContent = display.textContent.slice(0, -1);
             
                 if(display.textContent === "" ||display.textContent === "-" ) display.textContent = "0";  
-                if(previousKeyType === "numbers"){return;} 
             }
 
         }
@@ -164,14 +197,14 @@ buttons.addEventListener("click", e => {
         
     }
 
-    // if(type === "changer"){
-    //         display.textContent = display.textContent;            
-    // }
     calculator.dataset.previousKeyType = type;
     calculator.dataset.previousKey = keyValue;
-    calculator.dataset.previousOperator = previousKey;
 
-        console.log(keyValue);
+    if(previousKey === "+" || previousKey === "-" ||
+       previousKey ==="×" || previousKey === "÷" || 
+       previousKey === "%"){
+            calculator.dataset.previousOperator = previousKey;
+       }
 })
 
 function calculate(firstDigit,operator,secondDigit){
@@ -182,7 +215,7 @@ function calculate(firstDigit,operator,secondDigit){
     if (operator === "+") result = firstDigit + secondDigit;
     if(operator === "-") result = firstDigit - secondDigit;
     if(operator === "×")result = firstDigit * secondDigit;  
-    if(operator === "÷") result = firstDigit / secondDigit;
+    if(operator === "÷") {result = firstDigit / secondDigit;}
     if(operator === "%") result = (secondDigit/100) * firstDigit;
 
     if(operator === "plus") result = firstDigit + secondDigit;
