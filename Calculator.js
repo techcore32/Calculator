@@ -22,9 +22,8 @@ buttons.addEventListener("click", e => {
 
         if(displayValue === "0"){
             display.textContent = keyValue;
-            ghostDisplay.textContent = keyValue;
-            
-            if(previousKeyType === "operator"){
+
+            if(previousKeyType === "operator" || previousKey === "CE"){
  
                 if(type === "numbers") 
                 {
@@ -35,7 +34,6 @@ buttons.addEventListener("click", e => {
         } 
         else if(previousKeyType === "operator"){
             display.textContent = keyValue;
-            ghostDisplay.textContent = keyValue;
 
             if(type === "numbers") 
             {
@@ -49,10 +47,10 @@ buttons.addEventListener("click", e => {
         else if(previousKeyType === "equal"){
             display.textContent = keyValue;
         }
-    
+
         else{
             display.textContent = displayValue + keyValue;
-            ghostDisplay.textContent = displayValue + keyValue;
+            ghostDisplay.textContent = displayValue + keyValue;            
         }
     }
     
@@ -60,6 +58,9 @@ buttons.addEventListener("click", e => {
     //is key an operator?
     if (key.dataset.state === ""){
         if(type === "operator"){
+
+            ghostDisplay.style.opacity = "1";
+
             let operatorKeys = buttons.querySelectorAll("[data-type='operator']");
             operatorKeys.forEach(el => {el.dataset.state = ""});
        
@@ -67,6 +68,13 @@ buttons.addEventListener("click", e => {
 
             calculator.dataset.operator = key.dataset.function;
             calculator.dataset.firstDigit = displayValue;
+
+            if(calculator.dataset.operator === "percentage"){
+                ghostDisplay.textContent = displayValue
+            }
+            else{
+            ghostDisplay.textContent = displayValue + " " + keyValue;
+            }
          }
     }
 
@@ -79,13 +87,20 @@ buttons.addEventListener("click", e => {
             key.dataset.state = "selected"
 
             calculator.dataset.operator = previousOperator;
-               
-            let firstDigit = calculator.dataset.firstDigit;;
+            let firstDigit;
+            
+        if(previousKey === "CE"){
+            firstDigit = displayValue;
+        }
+        else{
+            firstDigit = calculator.dataset.firstDigit;
+        }
+
             let secondDigit = displayValue;
-            let operator = calculator.dataset.operator;;
+            let operator = calculator.dataset.operator;
             
 
-            if(operator === "divide" || operator === "÷"){
+            if(operator === "÷"){
                 if(firstDigit === "0" && secondDigit === "0"){
                     display.textContent = "Undefined Result"
                 }
@@ -94,30 +109,33 @@ buttons.addEventListener("click", e => {
                 }
                 else{
                     display.textContent = calculate(firstDigit,operator,secondDigit);
-                    ghostDisplay.textContent = calculate(firstDigit,operator,secondDigit);
+                    ghostDisplay.textContent = calculate(firstDigit,operator,secondDigit) + 
+                                               " " + keyValue;
                 }
             }
+
             else{
                 display.textContent = calculate(firstDigit,operator,secondDigit);
-                ghostDisplay.textContent = calculate(firstDigit,operator,secondDigit);
-            }
+                
+                if(operator === "%"){
+                    ghostDisplay.textContent = "(" + secondDigit + " " + "/" + " " + "100" + ")" +
+                                               " " +"×" + " " + firstDigit;
+                    
+                }
+                else{
+                    ghostDisplay.textContent = calculate(firstDigit,operator,secondDigit) + 
+                                               " " +  keyValue;
+                }
 
-            if(type === "clear"){
-                calculator.dataset.firstDigit = ghostDisplay.textContent;
-            }
-            else{
-            calculator.dataset.firstDigit = displayValue;
-            // calculator.dataset.operator = key.dataset.function;
-            }
-
-            calculator.dataset.firstDigit = calculate(firstDigit,operator,secondDigit);
-            
+                calculator.dataset.firstDigit = calculate(firstDigit,operator,secondDigit);
+            }            
         }
-    
     }
 
 
     if(type === "operatorInstant"){
+        ghostDisplay.style.opacity = "1";
+
         let operatorKeys = buttons.querySelectorAll("[data-type='operator']");
         operatorKeys.forEach(el => {el.dataset.state = ""});
 
@@ -133,10 +151,27 @@ buttons.addEventListener("click", e => {
             }
             else{
                 display.textContent = calculate(firstDigit,operator);
+                ghostDisplay.textContent = "1" + " " + "÷" + " " + firstDigit;
+            }
+        }
+        else if(operator === "changeSign"){
+            if(firstDigit === "0"){
+                ghostDisplay.textContent = "0";
+            }
+            else{
+                display.textContent = calculate(firstDigit,operator);
+                ghostDisplay.textContent =  "-" + "(" + firstDigit + ")";
             }
         }
         else{
             display.textContent = calculate(firstDigit,operator);
+
+            if(operator === "square"){ 
+                ghostDisplay.textContent = firstDigit + "⁽" + "²" + "⁾";
+            }
+            else if(operator === "root-square"){
+                ghostDisplay.textContent =  "√" + "(" + firstDigit + ")";
+            }
         }
 
     }
@@ -149,7 +184,9 @@ buttons.addEventListener("click", e => {
         let firstDigit = calculator.dataset.firstDigit;
         let secondDigit = displayValue;
         let operator = calculator.dataset.operator;
-        if(operator === "divide"){
+
+ 
+        if(operator === "divide" || operator === "÷"){
             if(firstDigit === "0" && secondDigit === "0"){
                 display.textContent = "Undefined Result"
             }
@@ -158,19 +195,36 @@ buttons.addEventListener("click", e => {
             }
             else{
                 display.textContent = calculate(firstDigit,operator,secondDigit);
+                ghostDisplay.textContent = firstDigit + " " + "÷" + " " + secondDigit + 
+                                           " " + keyValue;
             }
         }
         else{
             display.textContent = calculate(firstDigit,operator,secondDigit);
+
+            if(operator === "plus" || operator === "+"){
+                ghostDisplay.textContent =  firstDigit + " " + "+" + " " + secondDigit + 
+                                            " " + keyValue;
+            }
+            if(operator === "minus" || operator === "-"){       
+                ghostDisplay.textContent =  firstDigit + " " + "-" + " " + secondDigit + 
+                                            " " + keyValue;
+            }
+            if(operator === "multiply" || operator === "×"){
+                ghostDisplay.textContent =  firstDigit + " " + "×" + " " + secondDigit + 
+                                            " " + keyValue;
+            }
+            if(operator === "percentage" || operator === "%"){
+                ghostDisplay.textContent = "(" + secondDigit + " " + "/" + " " + "100" + 
+                                           ")" + " " +"×" + " " + firstDigit + " " + keyValue;
+            }
         }
     }
 
     if(type === "clear"){
 
         if(erase === "clear-entry"){
-
             display.textContent = "0";
-
         }   
  
         else if(erase  === "backSpace"){
@@ -182,14 +236,17 @@ buttons.addEventListener("click", e => {
             else{
                 display.textContent = display.textContent.slice(0, -1);
             
-                if(display.textContent === "" ||display.textContent === "-" ) display.textContent = "0";  
+                if(display.textContent === "" || display.textContent === "-" ) {
+                display.textContent = "0";  
+                }
             }
 
         }
        
         else if(erase === "clear-global"){
             display.textContent = "0";
-            ghostDisplay.textContent = "";
+            ghostDisplay.textContent = "0";
+            ghostDisplay.style.opacity = "0";
 
             let operatorKeys = buttons.querySelectorAll("[data-type='operator']");
             operatorKeys.forEach(el => {el.dataset.state = ""});
@@ -208,7 +265,8 @@ buttons.addEventListener("click", e => {
 })
 
 function calculate(firstDigit,operator,secondDigit){
-   firstDigit = parseFloat(firstDigit);
+
+    firstDigit = parseFloat(firstDigit);
    secondDigit = parseFloat(secondDigit);
    let result = "";
     

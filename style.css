@@ -1,9 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@200;300;400;600;700&display=swap');
 
 body{
-    /* display: flex;
-    justify-content: center;
-    align-items: center; */
     width: 320px;
     height: 535px;
     background-color: hsl(0, 0%, 95%);
@@ -27,26 +24,29 @@ body{
 .headerText{
     background-color:hsl(0, 0%, 95%) ;
     margin-left: 8px;
-    /* border: 1.5px solid hsl(0, 0%, 65%); */
 }
 
 .display{
-    
     flex-direction: column;
     height: 120px;
+
 }
 
 .ghostDisplay{
     display: flex;
     justify-content: flex-end;
     align-items: center;
+    opacity: 0;
+    font-size: 18px;
+    color: hsl(0, 0%, 60%);
+    padding-right: 10px;
+    height: 40px;
 }
-
 .display-numbers{
     display: flex;
     justify-content: flex-end;
     align-items: center;
-    height: 100px;
+    height: 95px;
     font-size: 32px;
     font-weight: bold;
     padding-right: 10px;
