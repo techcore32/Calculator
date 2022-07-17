@@ -3,7 +3,6 @@ const display = calculator.querySelector(".display-numbers");
 const ghostDisplay = calculator.querySelector(".ghostDisplay");
 const buttons = calculator.querySelector(".buttonsContainer");
 
-
 buttons.addEventListener("click", e => {
     if(!e.target.closest("button")) return;
 
@@ -15,9 +14,13 @@ buttons.addEventListener("click", e => {
     const {previousKey} = calculator.dataset;
     const {previousOperator} = calculator.dataset;
     const erase = key.dataset.erase;
-
-
-    //is key a number?
+    const {secondDigitStore} = calculator.dataset;
+    
+    if (display.textContent.length > 16){
+        display.style.fontSize = "28px";
+    }
+    
+     
     if(type === "numbers"){
 
         if(displayValue === "0"){
@@ -31,10 +34,11 @@ buttons.addEventListener("click", e => {
                    state.forEach(el => {el.dataset.state = "unselected"});
                 }
             }
+            
         } 
         else if(previousKeyType === "operator"){
             display.textContent = keyValue;
-
+            
             if(type === "numbers") 
             {
                let state = buttons.querySelectorAll("[data-type='operator']");
@@ -50,12 +54,12 @@ buttons.addEventListener("click", e => {
 
         else{
             display.textContent = displayValue + keyValue;
-            ghostDisplay.textContent = displayValue + keyValue;            
+            ghostDisplay.textContent = displayValue + keyValue; 
+                  
         }
     }
     
 
-    //is key an operator?
     if (key.dataset.state === ""){
         if(type === "operator"){
 
@@ -81,6 +85,7 @@ buttons.addEventListener("click", e => {
     if(key.dataset.state === "unselected"){
     
         if(type === "operator"){ 
+            
             let operatorKeys = buttons.querySelectorAll("[data-type='operator']");
             operatorKeys.forEach(el => {el.dataset.state = ""});
 
@@ -111,6 +116,7 @@ buttons.addEventListener("click", e => {
                     display.textContent = calculate(firstDigit,operator,secondDigit);
                     ghostDisplay.textContent = calculate(firstDigit,operator,secondDigit) + 
                                                " " + keyValue;
+                    calculator.dataset.firstDigit = calculate(firstDigit,operator,secondDigit);
                 }
             }
 
@@ -152,6 +158,7 @@ buttons.addEventListener("click", e => {
             else{
                 display.textContent = calculate(firstDigit,operator);
                 ghostDisplay.textContent = "1" + " " + "÷" + " " + firstDigit;
+                
             }
         }
         else if(operator === "changeSign"){
@@ -172,6 +179,10 @@ buttons.addEventListener("click", e => {
             else if(operator === "root-square"){
                 ghostDisplay.textContent =  "√" + "(" + firstDigit + ")";
             }
+
+            if (display.textContent.length > 16){
+                display.style.fontSize = "25px";
+            }
         }
 
     }
@@ -182,10 +193,20 @@ buttons.addEventListener("click", e => {
 
         
         let firstDigit = calculator.dataset.firstDigit;
-        let secondDigit = displayValue;
         let operator = calculator.dataset.operator;
+        let secondDigit;
+        if(previousKeyType === "operator") {
+            return;
+        }
+        if(previousKeyType === "equal"){
+            firstDigit =  calculator.dataset.firstDigit;
+            secondDigit = secondDigitStore;
+        }
+        else{
+            secondDigit = displayValue;
+        }
 
- 
+         
         if(operator === "divide" || operator === "÷"){
             if(firstDigit === "0" && secondDigit === "0"){
                 display.textContent = "Undefined Result"
@@ -197,6 +218,7 @@ buttons.addEventListener("click", e => {
                 display.textContent = calculate(firstDigit,operator,secondDigit);
                 ghostDisplay.textContent = firstDigit + " " + "÷" + " " + secondDigit + 
                                            " " + keyValue;
+                calculator.dataset.firstDigit = calculate(firstDigit,operator,secondDigit);
             }
         }
         else{
@@ -218,13 +240,23 @@ buttons.addEventListener("click", e => {
                 ghostDisplay.textContent = "(" + secondDigit + " " + "/" + " " + "100" + 
                                            ")" + " " +"×" + " " + firstDigit + " " + keyValue;
             }
+           
+            calculator.dataset.firstDigit = calculate(firstDigit,operator,secondDigit);
+
+
         }
     }
 
     if(type === "clear"){
 
         if(erase === "clear-entry"){
-            display.textContent = "0";
+
+            if(previousKeyType === "equal"){
+                return;
+            }
+            else{
+                display.textContent = "0";  
+            }
         }   
  
         else if(erase  === "backSpace"){
@@ -262,6 +294,12 @@ buttons.addEventListener("click", e => {
        previousKey === "%"){
             calculator.dataset.previousOperator = previousKey;
        }
+    
+    else if(previousKey !== "="){
+       
+        calculator.dataset.secondDigitStore =  displayValue;
+    }
+
 })
 
 function calculate(firstDigit,operator,secondDigit){
