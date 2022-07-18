@@ -16,11 +16,7 @@ buttons.addEventListener("click", e => {
     const erase = key.dataset.erase;
     const {secondDigitStore} = calculator.dataset;
     
-    if (display.textContent.length > 16){
-        display.style.fontSize = "28px";
-    }
-    
-     
+   
     if(type === "numbers"){
 
         if(displayValue === "0"){
@@ -85,7 +81,7 @@ buttons.addEventListener("click", e => {
     if(key.dataset.state === "unselected"){
     
         if(type === "operator"){ 
-            
+           
             let operatorKeys = buttons.querySelectorAll("[data-type='operator']");
             operatorKeys.forEach(el => {el.dataset.state = ""});
 
@@ -103,7 +99,6 @@ buttons.addEventListener("click", e => {
 
             let secondDigit = displayValue;
             let operator = calculator.dataset.operator;
-            
 
             if(operator === "÷"){
                 if(firstDigit === "0" && secondDigit === "0"){
@@ -113,6 +108,8 @@ buttons.addEventListener("click", e => {
                     display.textContent = "Cannot divide by zero"
                 }
                 else{
+                    
+
                     display.textContent = calculate(firstDigit,operator,secondDigit);
                     ghostDisplay.textContent = calculate(firstDigit,operator,secondDigit) + 
                                                " " + keyValue;
@@ -122,7 +119,7 @@ buttons.addEventListener("click", e => {
 
             else{
                 display.textContent = calculate(firstDigit,operator,secondDigit);
-                
+            
                 if(operator === "%"){
                     ghostDisplay.textContent = "(" + secondDigit + " " + "/" + " " + "100" + ")" +
                                                " " +"×" + " " + firstDigit;
@@ -134,6 +131,8 @@ buttons.addEventListener("click", e => {
                 }
 
                 calculator.dataset.firstDigit = calculate(firstDigit,operator,secondDigit);
+               
+
             }            
         }
     }
@@ -150,12 +149,14 @@ buttons.addEventListener("click", e => {
 
         let firstDigit = calculator.dataset.firstDigit;
         let operator = calculator.dataset.operator;
-        
+
+
         if(operator === "reciprocal"){
             if(firstDigit === "0"){
                 display.textContent = "Cannot divide by zero"
             }
             else{
+
                 display.textContent = calculate(firstDigit,operator);
                 ghostDisplay.textContent = "1" + " " + "÷" + " " + firstDigit;
                 
@@ -180,9 +181,6 @@ buttons.addEventListener("click", e => {
                 ghostDisplay.textContent =  "√" + "(" + firstDigit + ")";
             }
 
-            if (display.textContent.length > 16){
-                display.style.fontSize = "25px";
-            }
         }
 
     }
@@ -195,6 +193,8 @@ buttons.addEventListener("click", e => {
         let firstDigit = calculator.dataset.firstDigit;
         let operator = calculator.dataset.operator;
         let secondDigit;
+
+
         if(previousKeyType === "operator") {
             return;
         }
@@ -206,7 +206,6 @@ buttons.addEventListener("click", e => {
             secondDigit = displayValue;
         }
 
-         
         if(operator === "divide" || operator === "÷"){
             if(firstDigit === "0" && secondDigit === "0"){
                 display.textContent = "Undefined Result"
@@ -215,6 +214,7 @@ buttons.addEventListener("click", e => {
                 display.textContent = "Cannot divide by zero"
             }
             else{
+  
                 display.textContent = calculate(firstDigit,operator,secondDigit);
                 ghostDisplay.textContent = firstDigit + " " + "÷" + " " + secondDigit + 
                                            " " + keyValue;
@@ -240,7 +240,7 @@ buttons.addEventListener("click", e => {
                 ghostDisplay.textContent = "(" + secondDigit + " " + "/" + " " + "100" + 
                                            ")" + " " +"×" + " " + firstDigit + " " + keyValue;
             }
-           
+
             calculator.dataset.firstDigit = calculate(firstDigit,operator,secondDigit);
 
 
@@ -249,7 +249,10 @@ buttons.addEventListener("click", e => {
 
     if(type === "clear"){
 
+           
         if(erase === "clear-entry"){
+
+            display.style.fontSize = "32px";
 
             if(previousKeyType === "equal"){
                 return;
@@ -260,7 +263,7 @@ buttons.addEventListener("click", e => {
         }   
  
         else if(erase  === "backSpace"){
-    
+
             if(previousKeyType === "operator" || 
                previousKeyType === "equal"||
                previousKeyType === "operatorInstant"){return;}
@@ -276,6 +279,8 @@ buttons.addEventListener("click", e => {
         }
        
         else if(erase === "clear-global"){
+            display.style.fontSize = "32px";
+
             display.textContent = "0";
             ghostDisplay.textContent = "0";
             ghostDisplay.style.opacity = "0";
@@ -300,15 +305,47 @@ buttons.addEventListener("click", e => {
         calculator.dataset.secondDigitStore =  displayValue;
     }
 
+    if (display.textContent.length > 16){
+        display.style.fontSize = "27px";
+        
+    }
+
+    if (display.textContent.length < 16){
+        display.style.fontSize = "32px";
+    }
+
+    if (display.textContent.length > 21){
+        display.style.fontSize = "24px";
+    }
+
+    if (ghostDisplay.textContent.length > 25){
+        ghostDisplay.style.fontSize = "15px";
+    }
+    
+    if (display.textContent.length > 3){
+ 
+        display.textContent = display.textContent.replace(/,/g, "");
+        display.textContent = display.textContent.replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",");
+    }
+
+ 
 })
 
 function calculate(firstDigit,operator,secondDigit){
+    const regex = /,/g;
+   
+    if(operator === "reciprocal" || operator === "square" ||
+       operator === "root-square" || operator === "changeSign"){
+        firstDigit = parseFloat(firstDigit.replace(regex, ''));
+    }
+    else{
+        firstDigit = parseFloat(firstDigit.replace(regex, ''));
+        secondDigit = parseFloat(secondDigit.replace(regex, ''));
+    }
 
-    firstDigit = parseFloat(firstDigit);
-   secondDigit = parseFloat(secondDigit);
-   let result = "";
+    let result = "";
     
-    if (operator === "+") result = firstDigit + secondDigit;
+    if(operator === "+") result = firstDigit + secondDigit;
     if(operator === "-") result = firstDigit - secondDigit;
     if(operator === "×")result = firstDigit * secondDigit;  
     if(operator === "÷") {result = firstDigit / secondDigit;}
@@ -325,6 +362,7 @@ function calculate(firstDigit,operator,secondDigit){
     if(operator === "square") result = firstDigit ** 2;
     if(operator === "root-square") result = Math.sqrt(firstDigit);
     if(operator === "changeSign") result = -1 * firstDigit ;
-
+    
         return result;
 }
+
