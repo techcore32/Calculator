@@ -15,7 +15,7 @@ body{
     right: 0;
     background-color: hsl(0, 0%, 95%);
     margin: 0px auto;
-    width: 320px;
+    width: 317px;
     height: 490px;
 }
 
@@ -171,5 +171,6 @@ button {
         background-color: hsl(0, 0%, 95%);
         width: 320px;
         height: 495px;
+        border: 3px solid
     }
 }
