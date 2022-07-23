@@ -1,18 +1,22 @@
 @import url('https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@200;300;400;600;700&display=swap');
 
 body{
-    width: 320px;
-    height: 535px;
-    background-color: hsl(0, 0%, 95%);
+    
+    width: 100%;
+    height: 100%;
+    background-color:  hsl(0, 0%, 95%);
     font-family: 'Source Sans Pro', sans-serif;
-    margin: 0px;
+    margin: 0px auto;
 }
 
 #globalContainer {
+    position: absolute;
+    left: 0;
+    right: 0;
     background-color: hsl(0, 0%, 95%);
+    margin: 0px auto;
     width: 320px;
-    height: 535px;
-
+    height: 490px;
 }
 
 .headerContainer{
@@ -146,4 +150,26 @@ button {
 }
 .equal {
     font-size: 0px;
+}
+
+@media (min-width:321px){
+    html{height:100%;}
+    body{
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(rgba(34,193,195,1) 5%, rgba(92,191,150,1) 37%, rgba(207,150,75,0.8267507686668417) 69%, rgba(253,187,45,1) 100%); 
+        font-family: 'Source Sans Pro', sans-serif;
+        margin: 0px auto;
+    }
+    
+    #globalContainer {
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: 25%;
+        margin: 0px auto;
+        background-color: hsl(0, 0%, 95%);
+        width: 320px;
+        height: 495px;
+    }
 }
